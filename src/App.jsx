@@ -1,9 +1,30 @@
 import React from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Login from './pages/auth/Login'
+import SignUp from './pages/auth/SignUp'
+import Home from './pages/Home'
+import { Toaster } from './components/ui/sonner'
 
+const appRouter = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />
+  },
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/signup',
+    element: <SignUp />
+  }])
 const App = () => {
+  
   return (
     <>
-      <h1 className='text-red-400'>hello world.!</h1>
+       <Toaster/>
+     <RouterProvider router={appRouter} />
+
     </>
   )
 }
