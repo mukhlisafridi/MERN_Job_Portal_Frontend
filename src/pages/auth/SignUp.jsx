@@ -3,11 +3,16 @@ import Navbar from "@/components/common/Navbar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant.js";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((store) => store.auth.loading);
   const navigate = useNavigate();
   const [input, setInput] = useState({
     fullName: "",
@@ -17,8 +22,6 @@ const SignUp = () => {
     role: "",
     profileImage: null,
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -38,12 +41,11 @@ const SignUp = () => {
     formData.append("password", input.password);
     formData.append("role", input.role);
 
-    if (input.profileImage) {
-      formData.append("profileImage", input.profileImage);
-    }
-
+  if (input.profileImage) {
+  formData.append("file", input.profileImage);
+}
     try {
-      setIsSubmitting(true);
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
         withCredentials: true,
       });
@@ -56,16 +58,16 @@ const SignUp = () => {
       setInput({
         fullName: "",
         email: "",
-        phone: "",
+        phoneNumber: "",
         password: "",
         role: "",
         profileImage: null,
       });
-      setIsSubmitting(false);
     } catch (error) {
       console.log("error in user api", error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
-      setIsSubmitting(false);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
   return (
@@ -89,7 +91,6 @@ const SignUp = () => {
                 required
               />
             </div>
-
             <div className="flex flex-col gap-1">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -102,7 +103,6 @@ const SignUp = () => {
                 required
               />
             </div>
-
             <div className="flex flex-col gap-1">
               <Label htmlFor="phone">Phone Number</Label>
               <Input
@@ -115,7 +115,6 @@ const SignUp = () => {
                 required
               />
             </div>
-
             <div className="flex flex-col gap-1">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -128,7 +127,6 @@ const SignUp = () => {
                 required
               />
             </div>
-
             <div className="flex flex-col gap-2 my-2">
               <Label>Role</Label>
               <div className="flex items-center gap-4">
@@ -145,7 +143,6 @@ const SignUp = () => {
                   />
                   <Label htmlFor="student">Student</Label>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Input
                     type="radio"
@@ -161,7 +158,6 @@ const SignUp = () => {
                 </div>
               </div>
             </div>
-
             <div className="flex flex-col gap-2">
               <Label htmlFor="profileImage">Profile Image</Label>
               <Input
@@ -174,22 +170,24 @@ const SignUp = () => {
               />
             </div>
 
-            <Button
-              type="submit"
-              className="mt-4 cursor-pointer"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Signing Up…" : "Sign Up"}
+            <Button type="submit" className="mt-4" disabled={loading}>
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Signing up...
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
-
             <p className="text-center text-sm text-gray-600 mt-4">
               Already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="text-purple-600 font-medium hover:underline"
               >
                 Login
-              </a>
+              </Link>
             </p>
           </form>
         </div>
