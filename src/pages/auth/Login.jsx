@@ -10,6 +10,7 @@ import axios from "axios";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
+
 const Login = () => {
   const loading = useSelector((store) => store.auth.loading);
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const Login = () => {
         toast.success(res.data.message);
         navigate("/");
         dispatch(setUser(res.data.user));
+
       }
       console.log("Response:", res.data);
       setFormData({

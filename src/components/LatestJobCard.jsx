@@ -34,7 +34,7 @@ const LatestJobCard = ({ job }) => {
         </Badge>
 
         <Badge variant="ghost" className="text-[#7209b7] font-bold text-xs sm:text-sm">
-          {job.salary} LPA
+         Rs.{job.salary} 
         </Badge>
       </div>
     </div>

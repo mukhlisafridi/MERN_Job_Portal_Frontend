@@ -1,35 +1,22 @@
-import React from "react";
+import { useSelector } from "react-redux";
 import LatestJobCard from "./LatestJobCard";
 
 const LatestJobs = () => {
-  const jobs = [
-    {
-      company: { name: "Cigul Technologies" },
-      title: "MERN Stack Developer",
-      description:
-        "We are looking for a MERN Stack Developer with good knowledge of React, Node.js, Express, and MongoDB.",
-      position: 3,
-      jobType: "Full Time",
-      salary: 8,
-    },
-    {
-      company: { name: "TechSoft" },
-      title: "Frontend Developer",
-      description: "Strong React and Tailwind CSS skills required.",
-      position: 2,
-      jobType: "Remote",
-      salary: 6,
-    },
-  ];
+  const alljobs = useSelector((store) => store.jobs.allJobs); 
 
   return (
     <div className="px-4 sm:px-8 lg:px-16 py-8">
-      {/* Responsive Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job, index) => (
-          <LatestJobCard key={index} job={job} />
-        ))}
-      </div>
+      {alljobs && alljobs.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {alljobs.slice(0,6).map((job) => (
+            <LatestJobCard key={job._id} job={job} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-[#F83002] text-lg">
+          No jobs found...!
+        </p>
+      )}
     </div>
   );
 };
